@@ -1,0 +1,145 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://prepr.io/schemas/remote-source-response-schema.json",
+  "title": "Remote Source Response Schema",
+  "description": "JSON Schema for custom remote source endpoint responses used by Prepr integrations",
+  "type": "object",
+  "required": ["items", "total"],
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/RemoteSourceItem" },
+      "description": "List of remote content items returned by the endpoint"
+    },
+    "total": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of matching items available"
+    },
+    "filters": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/RemoteSourceFilter" },
+      "description": "Optional filter definitions shown in Prepr when editors browse remote content"
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "RemoteSourceItem": {
+      "type": "object",
+      "required": ["id", "body", "description"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique item identifier"
+        },
+        "body": {
+          "type": "string",
+          "description": "Title shown in Prepr"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description shown in Prepr"
+        },
+        "image_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Optional thumbnail image URL"
+        },
+        "external_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Optional external link to the source system"
+        },
+        "data": {
+          "type": "object",
+          "description": "Additional item data exposed to the front end",
+          "additionalProperties": {
+            "type": ["string", "number", "boolean"]
+          }
+        },
+        "created_on": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional creation timestamp"
+        },
+        "changed_on": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional last updated timestamp"
+        }
+      },
+      "additionalProperties": true
+    },
+    "RemoteSourceFilter": {
+      "type": "object",
+      "required": ["body", "param", "display_type"],
+      "properties": {
+        "body": {
+          "type": "string",
+          "description": "Label shown in Prepr for the filter"
+        },
+        "param": {
+          "type": "string",
+          "description": "Query parameter name used by the endpoint"
+        },
+        "display_type": {
+          "type": "string",
+          "enum": ["text", "checkbox", "dropdown", "toggle", "date", "date_range"],
+          "description": "Filter control type shown in Prepr"
+        },
+        "format": {
+          "type": "string",
+          "description": "Optional date format for date-based filters"
+        },
+        "default_value": {
+          "type": ["string", "number", "boolean", "null"],
+          "description": "Optional default value for the filter"
+        },
+        "values": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": ["string", "number", "boolean"]
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          ],
+          "description": "Optional available filter values"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "display_type": {
+                "enum": ["dropdown", "checkbox"]
+              }
+            }
+          },
+          "then": {
+            "required": ["values"]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "display_type": {
+                "enum": ["date", "date_range"]
+              }
+            }
+          },
+          "then": {
+            "required": ["format"]
+          }
+        }
+      ],
+      "additionalProperties": false
+    }
+  }
+}

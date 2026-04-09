@@ -1,0 +1,55 @@
+{
+  "filters": [
+    {
+      "body": "Category",
+      "param": "category",
+      "display_type": "dropdown",
+      "values": {
+        "comfort-food": "Comfort food",
+        "healthy": "Healthy",
+        "seasonal": "Seasonal"
+      }
+    },
+    {
+      "body": "Contains nuts",
+      "param": "nuts",
+      "display_type": "toggle",
+      "default_value": false
+    }
+  ],
+  "items": [
+    {
+      "id": "3177c1b8-a4e2-4a84-85e7-6a02cc0c5f98",
+      "body": "Ultimate Vegan Burger",
+      "description": "A plant-based burger with a seeded bun and herb mayo.",
+      "image_url": "https://images.example.com/products/ultimate-vegan-burger.jpg",
+      "external_url": "https://catalog.example.com/products/ultimate-vegan-burger",
+      "created_on": "2026-02-12T10:15:30+00:00",
+      "changed_on": "2026-03-01T15:48:21+00:00",
+      "data": {
+        "category": "Comfort food",
+        "type": "Main",
+        "price": 8.99,
+        "nuts": false,
+        "cooking_time": 30
+      }
+    },
+    {
+      "id": "bd78aeff-1c4a-49da-9cdf-c5ed5bc9c1a2",
+      "body": "Green Goddess Bowl",
+      "description": "A nourishing bowl with greens, grains, and plant proteins.",
+      "image_url": "https://images.example.com/products/green-goddess-bowl.jpg",
+      "external_url": "https://catalog.example.com/products/green-goddess-bowl",
+      "created_on": "2026-02-15T08:20:15+00:00",
+      "changed_on": "2026-03-04T08:25:15+00:00",
+      "data": {
+        "category": "Healthy",
+        "type": "Main",
+        "price": 9.5,
+        "nuts": false,
+        "cooking_time": 25
+      }
+    }
+  ],
+  "total": 2
+}
