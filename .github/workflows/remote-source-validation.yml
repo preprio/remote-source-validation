@@ -60,7 +60,7 @@ jobs:
         id: validate
         continue-on-error: true
         run: |
-          node scripts/validate-prepr-schema.mjs \
+          node scripts/validate-prepr-remote-source.mjs \
             --schema "${{ inputs.schema_path }}" \
             --target "${{ inputs.target_path }}" \
             --report-file report.json
