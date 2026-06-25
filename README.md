@@ -1,44 +1,46 @@
 # Remote Source Validation
 
-GitHub Actions workflow that validates JSON files in `remote-source/spec` against the Prepr remote source response schema spec.
+Validate JSON files in `remote-source/spec` against the Prepr remote source response schema spec.
 
-## Why use this GitHub Action
+## Why use this validator
 
-- Validate remote source changes early in pull requests and before merges.
-- Enforce consistent spec quality with one workflow across repositories.
+- Validate remote source response examples before using or sharing them.
 - Get file-level error output that is easy to review and fix.
-- Prevent invalid remote source updates from reaching `main`.
+- Keep response examples aligned with the schema in `spec/2026-03-05.json5`.
 
-## Install in your repository
+## Usage
 
-Create `.github/workflows/remote-source-validation.yml` in your repository:
+Install dependencies:
 
-```yaml
-name: Validate remote source spec
+```sh
+npm install
+```
 
-on:
-  workflow_dispatch:
-  pull_request:
-    paths:
-      - 'remote-source/spec/*.json'
-  push:
-    branches:
-      - main
-    paths:
-      - 'remote-source/spec/*.json'
+Run validation against the default target:
 
-jobs:
-  validate-remote-source:
-    uses: preprio/remote-source-validation/.github/workflows/remote-source-validation.yml@v1
+```sh
+npm run validate
+```
+
+Run the validator directly with custom paths:
+
+```sh
+node scripts/validate-prepr-remote-source.mjs --schema spec/2026-03-05.json5 --target remote-source/spec
+```
+
+To write a JSON report, pass `--report-file`:
+
+```sh
+node scripts/validate-prepr-remote-source.mjs --schema spec/2026-03-05.json5 --target remote-source/spec --report-file report.json
 ```
 
 ## What gets checked
 
 - Every JSON file under `remote-source/spec` is validated as a remote source endpoint response.
 - Validation errors are listed per file.
-- Any validation error fails the job.
-- Missing `remote-source/spec` fails the job.
-- Empty `remote-source/spec` (no `.json` files) fails the job.
+- Any validation error exits with a non-zero status.
+- Missing `remote-source/spec` exits with a non-zero status.
+- Empty `remote-source/spec` (no `.json` files) exits with a non-zero status.
 
 ## Remote source response file
 
@@ -102,48 +104,8 @@ The primary example in this repo is a remote source endpoint response:
 }
 ```
 
-Place one or more JSON files like this in `remote-source/spec` and the workflow will validate them.
-
-## Workflow outputs
-
-This workflow exposes outputs for downstream jobs:
-
-  - `validation_result` (`success` or `failure`)
-  - `files_checked`
-  - `invalid_files`
-  - `report_json` (JSON string with file-level errors)
-
-Example forwarding to Slack (or any notifier):
-
-```yaml
-name: Validate and notify
-
-on:
-  pull_request:
-    paths:
-      - 'remote-source/spec/*.json'
-
-jobs:
-  validate:
-    uses: preprio/remote-source-validation/.github/workflows/remote-source-validation.yml@v1
-
-  notify:
-    runs-on: ubuntu-latest
-    needs: validate
-    if: always()
-    steps:
-      - name: Print report
-        run: |
-          echo "result=${{ needs.validate.outputs.validation_result }}"
-          echo "files=${{ needs.validate.outputs.files_checked }}"
-          echo "invalid=${{ needs.validate.outputs.invalid_files }}"
-          echo '${{ needs.validate.outputs.report_json }}'
-```
+Place one or more JSON files like this in `remote-source/spec` and run the validator.
 
 ## Support
 
 Questions or issues: use [GitHub Issues](../../issues)
-
-## Versioning
-
-Use a version tag when referencing the workflow (`@v1`, `@v1.x.y`), not a branch name.
